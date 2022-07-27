@@ -1,0 +1,4 @@
+Go to the asset library and install:
+- AsepriteWizard
+- godot_xterm
+- godot-git-plugin

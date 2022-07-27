@@ -409,3 +409,5 @@ FodyWeavers.xsd
 
 ## Custom
 .mono/
+addons/*
+!addons/INSTRUCTIONS.txt
