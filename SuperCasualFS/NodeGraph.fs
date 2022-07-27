@@ -56,7 +56,6 @@ type Slot =
 
 
 
-
   
 
 
@@ -84,7 +83,8 @@ type NodeGraphNode() as _this =
     let mutable inputs: Map<int, (int * NodeGraphNode) > = Map [];
 
     (*
-        This is only for retrieving the value
+        This is only for retrieving the value of this Node's slots
+        it is set in Execute by each child, the key is the slot's index
         Key is the slot idx
         Value of the slot
     *)
@@ -145,22 +145,26 @@ type NodeEditor() as _this =
         let fromNode = this.GetNode<NodeGraphNode>(new NodePath(fromName));
         let toNode = this.GetNode<NodeGraphNode>(new NodePath(toName));
 
- 
 
-        let newInputs = toNode.GetInputs().Add(toIdx, (fromIdx, fromNode));
-        toNode.SetInputs(newInputs) |> ignore;
-
-        GD.Print("INPUTS:", toNode.GetInputs(), toNode, toNode.Name, newInputs);
-
-        this.ConnectNode(fromName, fromIdx, toName, toIdx)
+        if toNode.GetInputs().ContainsKey(toIdx) then
+            let (otherIdx, otherFromNode) = toNode.GetInputs().Item(toIdx);
+            this.FSDisconnect(otherFromNode.Name, otherIdx, toName, toIdx);
+            // if it's a different node we need to connect that new node
+            GD.Print("TO IDX: ", toIdx, toNode.Name, " FROM IDX: ", fromIdx, fromNode.Name, " OTHER IDX: ", otherIdx, otherFromNode.Name);
+            if not(fromIdx = otherIdx && fromNode.Name = otherFromNode.Name) then
+                this.ConnectNode(fromName, fromIdx, toName, toIdx) |> ignore
+                toNode.SetInputs(toNode.GetInputs().Add(toIdx, (fromIdx, fromNode))) |> ignore;
+        else
+            this.ConnectNode(fromName, fromIdx, toName, toIdx) |> ignore
+            toNode.SetInputs(toNode.GetInputs().Add(toIdx, (fromIdx, fromNode))) |> ignore;
+        
 
     member this.FSDisconnect(fromName: string, fromIdx: int, toName: string, toIdx: int) =
-        GD.Print("DISCONNECT IN FS");
-
-        //let fromNode = this.GetNode<NodeGraphNode>(new NodePath(fromName));
         let toNode = this.GetNode<NodeGraphNode>(new NodePath(toName));
+        let fromNode = this.GetNode<NodeGraphNode>(new NodePath(fromName));
 
-        toNode.SetOutputs(toNode.GetOutputs().Remove(toIdx)) |> ignore;
+        toNode.SetInputs(toNode.GetInputs().Remove(toIdx)) |> ignore;
+        toNode.SetOutputs(fromNode.GetOutputs().Remove(toIdx)) |> ignore;
         this.DisconnectNode(fromName, fromIdx, toName, toIdx);
 
     
@@ -200,14 +204,20 @@ module PlayerControls =
             if this.GetInputs().ContainsKey(0) then 
                 let (mIdx, mNode) = this.GetInputs().Item(0);
                 movementSpeed <- mNode.GetOutputs().Item(mIdx);
+            else
+                movementSpeed <- Slot.Percentage(0f)
                 
             if this.GetInputs().ContainsKey(1) then 
                 let (tIdx, tNode) = this.GetInputs().Item(1);
                 turningSpeed <- tNode.GetOutputs().Item(tIdx);
+            else
+                turningSpeed <- Slot.Percentage(0f)
 
             if this.GetInputs().ContainsKey(4) then 
                 let (nIdx, nNode) = this.GetInputs().Item(2);
                 name <- nNode.GetOutputs().Item(nIdx);
+            else
+                name <- Slot.Text("")
 
             
             

@@ -16,6 +16,9 @@ script = ExtResource( 7 )
 [node name="GraphEdit" type="GraphEdit" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+right_disconnects = true
+use_snap = false
+show_zoom_label = true
 script = ExtResource( 4 )
 
 [node name="PlayerInput" parent="GraphEdit" instance=ExtResource( 2 )]
@@ -64,4 +67,5 @@ CommentText = "To get started connect these constant numbers to Movement Speed a
 [node name="GraphEditorPopup" parent="." instance=ExtResource( 9 )]
 
 [connection signal="connection_request" from="GraphEdit" to="GraphEdit" method="FSConnect"]
+[connection signal="disconnection_request" from="GraphEdit" to="GraphEdit" method="FSDisconnect"]
 [connection signal="popup_request" from="GraphEdit" to="GraphEditorPopup" method="show"]

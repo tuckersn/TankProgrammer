@@ -7,7 +7,8 @@
 [ext_resource path="res://assets/fonts/IBM_PLEX_MONO_NORMAL.tres" type="DynamicFont" id=5]
 [ext_resource path="res://scenes/WelcomePopup.gd" type="Script" id=6]
 
-[sub_resource type="Theme" id=1]
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.352941, 0.4, 0.454902, 1 )
 
 [node name="Game" type="Control"]
 anchor_right = 1.0
@@ -29,23 +30,52 @@ margin_bottom = 720.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="PanelContainer2" type="ScrollContainer" parent="HSplitContainer"]
+[node name="GameWindow" type="Control" parent="HSplitContainer"]
 margin_left = 946.0
 margin_right = 1280.0
 margin_bottom = 720.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme = SubResource( 1 )
 
-[node name="ViewportContainer" type="ViewportContainer" parent="HSplitContainer/PanelContainer2"]
-margin_right = 334.0
-margin_bottom = 720.0
+[node name="Background" type="Panel" parent="HSplitContainer/GameWindow"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_styles/panel = SubResource( 1 )
+
+[node name="ToolBar" type="Panel" parent="HSplitContainer/GameWindow"]
+anchor_right = 1.0
+margin_bottom = 50.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HSplitContainer/GameWindow/ToolBar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="CheckButton" type="CheckButton" parent="HSplitContainer/GameWindow/ToolBar/HBoxContainer"]
+visible = false
+margin_right = 161.0
+margin_bottom = 50.0
+pressed = true
+text = "Debug Mode"
+align = 1
+
+[node name="CheckButton2" type="CheckButton" parent="HSplitContainer/GameWindow/ToolBar/HBoxContainer"]
+visible = false
+margin_right = 125.0
+margin_bottom = 50.0
+pressed = true
+text = "Playing"
+align = 1
+
+[node name="ViewportContainer" type="ViewportContainer" parent="HSplitContainer/GameWindow"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 50.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="Viewport" type="Viewport" parent="HSplitContainer/PanelContainer2/ViewportContainer"]
-size = Vector2( 334, 720 )
+[node name="Viewport" type="Viewport" parent="HSplitContainer/GameWindow/ViewportContainer"]
+size = Vector2( 334, 670 )
 size_override_stretch = true
 own_world = true
 transparent_bg = true
@@ -55,7 +85,7 @@ render_direct_to_screen = true
 render_target_update_mode = 3
 audio_listener_enable_2d = true
 
-[node name="Platformer" parent="HSplitContainer/PanelContainer2/ViewportContainer/Viewport" instance=ExtResource( 2 )]
+[node name="Platformer" parent="HSplitContainer/GameWindow/ViewportContainer/Viewport" instance=ExtResource( 2 )]
 
 [node name="HBoxContainer" type="Control" parent="."]
 anchor_left = 1.0
@@ -86,10 +116,10 @@ margin_top = -19.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 2
-min_value = 0.05
+min_value = 0.001
 max_value = 1.75
-step = 0.01
-value = 1.0
+step = 0.003
+value = 0.999
 ticks_on_borders = true
 
 [node name="WelcomePopup" type="WindowDialog" parent="."]
@@ -134,5 +164,5 @@ Automation is always cooler though :)
 
 Read the orange text box comments for more instructions!"
 
-[connection signal="value_changed" from="HBoxContainer/HSlider" to="HSplitContainer/PanelContainer2/ViewportContainer/Viewport/Platformer" method="ZoomChange"]
+[connection signal="value_changed" from="HBoxContainer/HSlider" to="HSplitContainer/GameWindow/ViewportContainer/Viewport/Platformer" method="ZoomChange"]
 [connection signal="ready" from="WelcomePopup" to="WelcomePopup" method="_on_WindowDialog_ready"]
