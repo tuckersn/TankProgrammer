@@ -37,10 +37,10 @@ func _on_LineEdit_text_changed(new_text):
 	
 "
 
-[node name="Number" type="GraphNode"]
-margin_right = 142.0
+[node name="ConstantNumber" type="GraphNode"]
+margin_right = 148.0
 margin_bottom = 62.0
-title = "Constant"
+title = "Constant Number"
 slot/0/left_enabled = false
 slot/0/left_type = 0
 slot/0/left_color = Color( 1, 0, 0, 1 )
@@ -52,7 +52,7 @@ script = ExtResource( 1 )
 [node name="LineEdit" type="LineEdit" parent="."]
 margin_left = 16.0
 margin_top = 24.0
-margin_right = 126.0
+margin_right = 132.0
 margin_bottom = 48.0
 script = SubResource( 1 )
 

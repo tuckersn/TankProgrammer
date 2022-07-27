@@ -2,7 +2,7 @@ namespace FS.Player
 
 open Godot
 open System
-
+open FS.Utils
 
 type Platformer() as _this =
     inherit Node2D()
@@ -42,11 +42,22 @@ type Player() as _this =
         self <- Some(this)
 
     abstract platformerPath: NodePath;
-    
+   
 
 type PlayerRayCaster() as _this =
     inherit RayCast2D()
 
+type PlayerGun() as _this =
+    inherit Node2D()
+
+    [<Export>]
+    let mutable rotation = 0f<rad>; 
+
+    override this._Process(delta) =
+        this.GlobalRotation <- float32 rotation
+
+    override this._PhysicsProcess(delta) =
+        rotation <- rotation + deg.rad(1f<deg>);
 
 type PlayerBody() as _this =
     inherit KinematicBody2D()

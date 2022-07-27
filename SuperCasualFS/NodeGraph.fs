@@ -252,15 +252,42 @@ module Constant =
         override this.Execute() =
             this.SetOutputs(this.GetOutputs().Add(0, Slot.Number(value))) |> ignore
 
+    [<Tool>]
     type NodeGraphNodeComment() as _this = 
         inherit NodeGraphNode()
     
+        let mutable labelNode: Option<RichTextLabel> = None;
+        let mutable comment: string = "";
+
+        [<Export(PropertyHint.MultilineText)>]
+        member this.CommentText
+            with get() = 
+                GD.Print("READ:", comment)
+                comment
+            and set(value: string) = 
+                comment <- value
+                match labelNode with
+                    | Some(node) -> node.Text <- value
+                    | None -> 
+                        let label = _this.GetChild(0);
+                        match label with
+                            | :? RichTextLabel as l ->                        
+                                l.Text <- value
+                                labelNode <- Some(l)
+                            | _ -> ()
+
+        member public this.SetLabel(label: RichTextLabel) =
+            labelNode <- Some(label)
     
         override this._Ready() =
-            this.Title = "Comment" |> ignore
-    
+            labelNode <- Some(_this.GetNode<RichTextLabel>(new NodePath("Label")));
+            labelNode.Value.Text <- comment
+            this.Comment <- true
+
         override this.Execute() =
-            ()
+                   ()
+
+  
 (*
     SWITCH STATEMENTS
 *)
@@ -282,7 +309,7 @@ module Switch =
         abstract member FalseExecute: unit -> unit;
         abstract member ConditionExecute: unit -> unit;
 
-        member this.Execute() =
+        override this.Execute() =
             this.ConditionExecute()
             match condition with
                 | true -> this.TrueExecute()
@@ -291,6 +318,7 @@ module Switch =
         member this.ExecuteInputs() =
             ()
 
+        member this.BaseSwitch() = this
 
 
 
@@ -298,14 +326,14 @@ module Switch =
     type NodeGraphNodeNumberSwitch() as _this =
         inherit NodeGraphBaseSwitch()
         
-
-        override this.TrueExcute() =
+        
+        override this.TrueExecute() =
             ()
 
-        member this.FalseExecute() =
+        override this.FalseExecute() =
             ()
 
-        member this.ConditionExecute() =
+        override this.ConditionExecute() =
             ()
 
 

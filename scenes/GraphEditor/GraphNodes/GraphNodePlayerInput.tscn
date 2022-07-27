@@ -6,7 +6,7 @@
 [node name="PlayerInput" type="GraphNode"]
 margin_right = 142.0
 margin_bottom = 78.0
-title = "Player Input"
+title = "Player's Sensors"
 slot/0/left_enabled = false
 slot/0/left_type = 0
 slot/0/left_color = Color( 1, 0, 0, 1 )

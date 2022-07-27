@@ -1,7 +1,7 @@
 <Project Sdk="Godot.NET.Sdk/3.3.0">
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <RootNamespace>AI Platformer</RootNamespace>
+    <RootNamespace>TankProgrammer</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="SuperCasualFS\SuperCasualFS.fsproj" />

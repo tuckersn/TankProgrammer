@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32510.428
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI Platformer", "AI Platformer.csproj", "{BA78A2B4-91CF-4F61-8ED4-C5C2D4FCDFF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TankProgrammer", "TankProgrammer.csproj", "{BA78A2B4-91CF-4F61-8ED4-C5C2D4FCDFF9}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SuperCasualFS", "SuperCasualFS\SuperCasualFS.fsproj", "{3890A919-29D4-4A3C-B538-173929B33926}"
 EndProject

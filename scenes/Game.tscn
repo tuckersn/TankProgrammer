@@ -1,9 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scripts/GameButton.cs" type="Script" id=1]
 [ext_resource path="res://scenes/Platformer/Platformer.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/GraphEditor/GraphEditor.tscn" type="PackedScene" id=3]
 [ext_resource path="res://assets/fonts/IBM_PLEX_MONO_BOLD.tres" type="DynamicFont" id=4]
+[ext_resource path="res://assets/fonts/IBM_PLEX_MONO_NORMAL.tres" type="DynamicFont" id=5]
+[ext_resource path="res://scenes/WelcomePopup.gd" type="Script" id=6]
 
 [sub_resource type="Theme" id=1]
 
@@ -90,4 +92,47 @@ step = 0.01
 value = 1.0
 ticks_on_borders = true
 
+[node name="WelcomePopup" type="WindowDialog" parent="."]
+visible = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -259.5
+margin_top = -231.5
+margin_right = 259.5
+margin_bottom = 231.5
+size_flags_horizontal = 3
+size_flags_vertical = 3
+popup_exclusive = true
+window_title = "Welcome to TankProgrammer!"
+script = ExtResource( 6 )
+
+[node name="MarginContainer" type="MarginContainer" parent="WelcomePopup"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="WelcomePopup/MarginContainer"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 509.0
+margin_bottom = 453.0
+custom_fonts/normal_font = ExtResource( 5 )
+text = "Welcome!
+
+TankProgrammer is an experimental visual programming game.
+
+You don't \"play\" this game, instead you write an AI to play for you.
+
+You can manually instruct your robot to do things using buttons, switches, etc.
+
+Automation is always cooler though :)
+
+Read the orange text box comments for more instructions!"
+
 [connection signal="value_changed" from="HBoxContainer/HSlider" to="HSplitContainer/PanelContainer2/ViewportContainer/Viewport/Platformer" method="ZoomChange"]
+[connection signal="ready" from="WelcomePopup" to="WelcomePopup" method="_on_WindowDialog_ready"]
