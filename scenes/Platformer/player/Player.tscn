@@ -1,0 +1,62 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://scenes/Platformer/player/player_sprite.aseprite" type="SpriteFrames" id=1]
+[ext_resource path="res://scenes/Platformer/player/PlayerBody.cs" type="Script" id=2]
+[ext_resource path="res://scenes/Platformer/player/Player.cs" type="Script" id=3]
+[ext_resource path="res://scenes/Platformer/player/CastHalfRight.gd" type="Script" id=4]
+
+[node name="Player" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="PlayerBody" type="KinematicBody2D" parent="."]
+script = ExtResource( 2 )
+speed = 12000.0
+
+[node name="Camera2D" type="Camera2D" parent="PlayerBody"]
+current = true
+
+[node name="Sprite" type="AnimatedSprite" parent="PlayerBody"]
+frames = ExtResource( 1 )
+animation = "Loop"
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="PlayerBody"]
+position = Vector2( 0, 1.5 )
+polygon = PoolVector2Array( 24, -30.5, 22, -30.5, 22, -33.5, 21, -33.5, 21, -34.5, 20, -34.5, 20, -35.5, 8, -35.5, 8, -36.5, -8, -36.5, -8, -35.5, -20, -35.5, -20, -34.5, -21, -34.5, -21, -33.5, -22, -33.5, -22, -30.5, -24, -30.5, -24, -29.5, -25, -29.5, -25, 26.5, -24, 26.5, -24, 27.5, -22, 27.5, -22, 30.5, -21, 30.5, -21, 31.5, -19, 31.5, -19, 32.5, -17, 32.5, -17, 33.5, -15, 33.5, -15, 34.5, -7, 34.5, -7, 35.5, 7, 35.5, 7, 34.5, 15, 34.5, 15, 33.5, 16, 33.5, 17, 33.5, 17, 32.5, 19, 32.5, 19, 31.5, 21, 31.5, 21, 30.5, 22, 30.5, 22, 27.5, 24, 27.5, 24, 26.5, 25, 26.5, 25, -29.5, 24, -29.5 )
+
+[node name="Debug" type="Node2D" parent="PlayerBody"]
+
+[node name="SightLines" type="Node2D" parent="PlayerBody/Debug"]
+
+[node name="Line2D" type="Line2D" parent="PlayerBody/Debug/SightLines"]
+position = Vector2( -0.466019, 0 )
+rotation = 0.785398
+scale = Vector2( 0.883495, 1 )
+points = PoolVector2Array( 0.527472, 0, 0.527472, -219 )
+width = 3.0
+default_color = Color( 0, 1, 0, 1 )
+
+[node name="Line2D2" type="Line2D" parent="PlayerBody/Debug/SightLines"]
+position = Vector2( 2.42504, -3.08535 )
+rotation = 5.49779
+scale = Vector2( 0.846992, 1.49192 )
+points = PoolVector2Array( -4.60032, 0.312959, -2.86312, -144.722 )
+width = 3.0
+default_color = Color( 1, 1, 0.4, 1 )
+
+[node name="Line2D3" type="Line2D" parent="PlayerBody/Debug/SightLines"]
+points = PoolVector2Array( 0, 0, 0, -219 )
+width = 3.0
+default_color = Color( 0, 0, 1, 1 )
+
+[node name="CastHalfLeft" type="RayCast2D" parent="PlayerBody"]
+enabled = true
+cast_to = Vector2( 200, -200 )
+
+[node name="CastForward" type="RayCast2D" parent="PlayerBody"]
+enabled = true
+cast_to = Vector2( 0, -200 )
+
+[node name="CastHalfRight" type="RayCast2D" parent="PlayerBody"]
+enabled = true
+cast_to = Vector2( -200, -200 )
+script = ExtResource( 4 )

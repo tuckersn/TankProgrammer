@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scenes/Platformer/player/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/Platformer/levels/Level0.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/Platformer/Platformer.cs" type="Script" id=3]
+
+[node name="Platformer" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="LevelContainer" type="Node2D" parent="."]
+
+[node name="Level0" parent="LevelContainer" instance=ExtResource( 2 )]
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
+position = Vector2( 158, 257 )
+PlatformerPath = NodePath("..")

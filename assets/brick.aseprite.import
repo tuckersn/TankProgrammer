@@ -1,0 +1,26 @@
+[remap]
+
+importer="aseprite.wizard.plugin"
+type="SpriteFrames"
+path="res://.import/brick.aseprite-c996198fcfc1af8a92dd5d82b12f8f4f.res"
+
+[deps]
+
+source_file="res://assets/brick.aseprite"
+dest_files=[ "res://.import/brick.aseprite-c996198fcfc1af8a92dd5d82b12f8f4f.res" ]
+
+[params]
+
+split_layers=false
+exclude_layers_pattern=""
+only_visible_layers=false
+sheet_type="Packed"
+sprite_filename_pattern="{basename}.{layer}.{extension}"
+texture_strip/import_texture_strip=false
+texture_strip/filename_pattern="{basename}.{layer}.Strip.{extension}"
+texture_atlas/import_texture_atlas=false
+texture_atlas/filename_pattern="{basename}.{layer}.Atlas.{extension}"
+texture_atlas/frame_filename_pattern="{basename}.{layer}.{animation}.{frame}.Atlas.{extension}"
+animated_texture/import_animated_texture=false
+animated_texture/filename_pattern="{basename}.{layer}.{animation}.Texture.{extension}"
+animated_texture/frame_filename_pattern="{basename}.{layer}.{animation}.{frame}.Texture.{extension}"
