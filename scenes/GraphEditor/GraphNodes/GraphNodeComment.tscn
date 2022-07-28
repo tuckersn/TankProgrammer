@@ -7,6 +7,7 @@
 margin_right = 108.0
 margin_bottom = 61.0
 title = "Comment"
+resizable = true
 comment = ""
 slot/0/left_enabled = false
 slot/0/left_type = 0

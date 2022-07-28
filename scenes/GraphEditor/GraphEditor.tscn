@@ -61,11 +61,18 @@ margin_right = 842.0
 margin_bottom = 192.0
 mouse_filter = 1
 offset = Vector2( 500, 100 )
+resizable = false
 comment = "To get started connect these constant numbers to Movement Speed and Turning Speed, it will auto convert a number between -1 and 1 to a positive or negative percentage of each speed."
 CommentText = "To get started connect these constant numbers to Movement Speed and Turning Speed, it will auto convert a number between -1 and 1 to a positive or negative percentage of each speed."
+resizableExport = false
 
 [node name="GraphEditorPopup" parent="." instance=ExtResource( 9 )]
 
+[connection signal="gui_input" from="." to="." method="GuiInput"]
+[connection signal="mouse_entered" from="." to="." method="MouseEnter"]
+[connection signal="mouse_exited" from="." to="." method="MouseExit"]
 [connection signal="connection_request" from="GraphEdit" to="GraphEdit" method="FSConnect"]
 [connection signal="disconnection_request" from="GraphEdit" to="GraphEdit" method="FSDisconnect"]
-[connection signal="popup_request" from="GraphEdit" to="GraphEditorPopup" method="show"]
+[connection signal="popup_request" from="GraphEdit" to="." method="PopupRequest"]
+[connection signal="popup_request" from="GraphEdit" to="GraphEdit" method="PopupRequest"]
+[connection signal="new_node" from="GraphEditorPopup" to="GraphEdit" method="AddNode"]

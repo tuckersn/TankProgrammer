@@ -124,50 +124,7 @@ type NodeGraphNode() as _this =
         _this.RectSize = newMinSize |> ignore
         this.RectMinSize = newMinSize |> ignore
         this.SetSize(newMinSize)
-
-
-type NodeEditor() as _this =
-    inherit GraphEdit()
-
-    [<Export>]
-    let index = 0u;
-
-    override this._Ready() =
-        GD.Print("NODE EDITOR READY");
-
-    (*
-        Called when an input slot is connected
-        to an output slot.
-    *)
-    member this.FSConnect(fromName: string, fromIdx: int, toName: string, toIdx: int) =
-        GD.Print("CONNECTION IN FS");
-
-        let fromNode = this.GetNode<NodeGraphNode>(new NodePath(fromName));
-        let toNode = this.GetNode<NodeGraphNode>(new NodePath(toName));
-
-
-        if toNode.GetInputs().ContainsKey(toIdx) then
-            let (otherIdx, otherFromNode) = toNode.GetInputs().Item(toIdx);
-            this.FSDisconnect(otherFromNode.Name, otherIdx, toName, toIdx);
-            // if it's a different node we need to connect that new node
-            GD.Print("TO IDX: ", toIdx, toNode.Name, " FROM IDX: ", fromIdx, fromNode.Name, " OTHER IDX: ", otherIdx, otherFromNode.Name);
-            if not(fromIdx = otherIdx && fromNode.Name = otherFromNode.Name) then
-                this.ConnectNode(fromName, fromIdx, toName, toIdx) |> ignore
-                toNode.SetInputs(toNode.GetInputs().Add(toIdx, (fromIdx, fromNode))) |> ignore;
-        else
-            this.ConnectNode(fromName, fromIdx, toName, toIdx) |> ignore
-            toNode.SetInputs(toNode.GetInputs().Add(toIdx, (fromIdx, fromNode))) |> ignore;
-        
-
-    member this.FSDisconnect(fromName: string, fromIdx: int, toName: string, toIdx: int) =
-        let toNode = this.GetNode<NodeGraphNode>(new NodePath(toName));
-        let fromNode = this.GetNode<NodeGraphNode>(new NodePath(fromName));
-
-        toNode.SetInputs(toNode.GetInputs().Remove(toIdx)) |> ignore;
-        toNode.SetOutputs(fromNode.GetOutputs().Remove(toIdx)) |> ignore;
-        this.DisconnectNode(fromName, fromIdx, toName, toIdx);
-
-    
+   
 
 (*
     PLAYER CONTROLS
@@ -189,6 +146,10 @@ module PlayerControls =
         let mutable movementSpeed: Slot = Slot.Percentage(0f);
         let mutable turningSpeed: Slot = Slot.Percentage(0f);
         let mutable name: Slot = Slot.Text("");
+
+        let valueLabels = lazy(_this.GetNode("ValueLabels"));
+        let movementLabel = lazy(valueLabels.Value.GetNode<Label>("MovementValue"));
+        let turningLabel = lazy(valueLabels.Value.GetNode<Label>("TurningValue"));
 
         member public this.GetMovementSpeed() =
             movementSpeed
@@ -219,7 +180,8 @@ module PlayerControls =
             else
                 name <- Slot.Text("")
 
-            
+            movementLabel.Value.Text <- "(" + Slot.percentage(movementSpeed).ToString() + ")"
+            turningLabel.Value.Text <- "(" + Slot.percentage(turningSpeed).ToString() + ")"
             
             
     
@@ -248,17 +210,22 @@ module Constant =
     type NodeGraphNodeNumber() as _this =
         inherit NodeGraphNode()
 
-        [<Export>]
-        let value = 0f;
+        let mutable value = 0f;
 
-        member public this.Value() = value;
+        [<Export>]
+        member this.Value
+            with get() = 
+                value
+            and set(newValue: float32) = 
+                value <- newValue
 
         override this._Ready() =
             base._Ready()
-            this.Value() = value |> ignore
             this.Execute()
 
-  
+        member this.TextBoxChange(value) =
+            this.Value <- value
+
         override this.Execute() =
             this.SetOutputs(this.GetOutputs().Add(0, Slot.Number(value))) |> ignore
 
@@ -266,6 +233,8 @@ module Constant =
     type NodeGraphNodeComment() as _this = 
         inherit NodeGraphNode()
     
+        [<Export>]
+        let mutable resizableExport = true;
         let mutable labelNode: Option<RichTextLabel> = None;
         let mutable comment: string = "";
 
@@ -293,11 +262,62 @@ module Constant =
             labelNode <- Some(_this.GetNode<RichTextLabel>(new NodePath("Label")));
             labelNode.Value.Text <- comment
             this.Comment <- true
+            this.Resizable <- resizableExport
 
         override this.Execute() =
                    ()
 
   
+module Math =
+    
+    type NodeGraphNodeRandomNumber() as _this =
+        inherit NodeGraphNode()
+
+        let mutable min = 0f;
+        let mutable max = 0f;
+        let mutable cycles = 0u;
+        let mutable maxCycles = 0u;
+        let mutable value = Slot.Number(0f);
+
+        static let systemRandom = new System.Random();
+
+        member this.random(min: float32, max: float32) =
+            (max - min) * float32(systemRandom.NextDouble()) + min
+
+        [<Export>]
+        member this.Min
+            with get() = 
+                min
+            and set(value: float32) = 
+                min <- value
+
+        [<Export>]
+        member this.Max
+            with get() = 
+                max
+            and set(value: float32) = 
+                max <- value
+
+        [<Export>]
+        member this.Cycles
+            with get() = 
+                maxCycles
+            and set(value: uint) = 
+                maxCycles <- value
+
+        override this._Ready() =
+            base._Ready()
+            this.Execute()
+  
+        override this.Execute() =
+            cycles <- cycles + 1u
+            if cycles > maxCycles then
+                cycles <- 0u
+                value <- Slot.Number((max - min) * float32(systemRandom.NextDouble()) + min)
+                GD.Print("RAND: ", value, " | ",  min, " | ", max, " | ", systemRandom.NextDouble());
+            this.SetOutputs(this.GetOutputs().Add(0, value))
+            
+
 (*
     SWITCH STATEMENTS
 *)
@@ -347,6 +367,53 @@ module Switch =
             ()
 
 
+type NodeEditor() as _this =
+    inherit GraphEdit()
+
+    let mutable popupPosition: Vector2 = Vector2.Zero;
+
+    override this._Ready() =
+        GD.Print("NODE EDITOR READY");
+
+    (*
+        Called when an input slot is connected
+        to an output slot.
+    *)
+    member this.FSConnect(fromName: string, fromIdx: int, toName: string, toIdx: int) =
+        GD.Print("CONNECTION IN FS");
+
+        let fromNode = this.GetNode<NodeGraphNode>(new NodePath(fromName));
+        let toNode = this.GetNode<NodeGraphNode>(new NodePath(toName));
+
+
+        if toNode.GetInputs().ContainsKey(toIdx) then
+            let (otherIdx, otherFromNode) = toNode.GetInputs().Item(toIdx);
+            this.FSDisconnect(otherFromNode.Name, otherIdx, toName, toIdx);
+            // if it's a different node we need to connect that new node
+            GD.Print("TO IDX: ", toIdx, toNode.Name, " FROM IDX: ", fromIdx, fromNode.Name, " OTHER IDX: ", otherIdx, otherFromNode.Name);
+            if not(fromIdx = otherIdx && fromNode.Name = otherFromNode.Name) then
+                this.ConnectNode(fromName, fromIdx, toName, toIdx) |> ignore
+                toNode.SetInputs(toNode.GetInputs().Add(toIdx, (fromIdx, fromNode))) |> ignore;
+        else
+            this.ConnectNode(fromName, fromIdx, toName, toIdx) |> ignore
+            toNode.SetInputs(toNode.GetInputs().Add(toIdx, (fromIdx, fromNode))) |> ignore;
+        
+
+    member this.FSDisconnect(fromName: string, fromIdx: int, toName: string, toIdx: int) =
+        let toNode = this.GetNode<NodeGraphNode>(new NodePath(toName));
+        let fromNode = this.GetNode<NodeGraphNode>(new NodePath(fromName));
+
+        toNode.SetInputs(toNode.GetInputs().Remove(toIdx)) |> ignore;
+        toNode.SetOutputs(fromNode.GetOutputs().Remove(toIdx)) |> ignore;
+        this.DisconnectNode(fromName, fromIdx, toName, toIdx);
+
+    member this.AddNode(node: NodeGraphNode, position: Vector2) =
+        node.Offset <- this.ScrollOffset + popupPosition;
+        this.AddChild(node);
+        
+    member this.PopupRequest(pos) =
+        popupPosition <- pos
+
 (*
     Actual Execution Engine
 *)
@@ -356,11 +423,21 @@ type NodeEngine() as _this =
 
     let frameCount: uint64 = 0UL;
 
+    let mutable mouseInside = false;
+
     [<Export>]
     let nodePath: NodePath = new NodePath("GraphEdit");
     let editor = lazy(_this.GetNode<NodeEditor>(nodePath)); 
+    let popup = lazy(_this.GetNode<PopupMenu>(new NodePath("GraphEditorPopup")));
     let playerInput = lazy(editor.Value.GetNode<PlayerControls.NodeGraphNodePlayerOutput>(new NodePath("PlayerInput")));
     let playerOutput = lazy(editor.Value.GetNode<PlayerControls.NodeGraphNodePlayerOutput>(new NodePath("PlayerOutput")));
+    
+
+    member this.PopupRequest(pos: Vector2) =
+        let popup = popup.Value
+
+        popup.SetPosition(pos);
+        popup.Call("show_wrapper");
 
     member this.Execute() =
         let po = playerOutput.Value;

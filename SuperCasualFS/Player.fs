@@ -87,7 +87,7 @@ type PlayerBody() as _this =
                 let mutable animationDirection = "MovingForward"
                             
                 if Math.Round(float(Math.Abs(sprite.Value.SpeedScale - animationSpeed * movePercent)), 1) > float(0) then
-                    GD.Print(sprite.Value.SpeedScale, " === ", animationSpeed * movePercent, " DIFF = ", sprite.Value.SpeedScale - animationSpeed * movePercent);
+                    //GD.Print(sprite.Value.SpeedScale, " === ", animationSpeed * movePercent, " DIFF = ", sprite.Value.SpeedScale - animationSpeed * movePercent);
                     let newSpeed = animationSpeed * movePercent
 
                     if newSpeed < 0f then

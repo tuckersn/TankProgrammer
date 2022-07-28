@@ -1,41 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeNumber.cs" type="Script" id=1]
-
-[sub_resource type="GDScript" id=1]
-script/source = "extends LineEdit
-
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = \"text\"
-var regex = RegEx.new()
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	print(get_parent().name)
-	self.text = str(get_parent().value)
-	regex.compile(\"^(-|)[0-9]+(\\\\.|)[0-9]*\")
-	
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
-
-func _on_LineEdit_text_changed(new_text):
-	var results = regex.search_all(new_text);
-	var new_str = \"\";
-	var caret_pos = self.caret_position;
-	for result in results:
-		new_str += result.strings[0]
-	self.text = new_str
-	self.caret_position = caret_pos
-	
-	get_parent().value = float(self.text);
-	
-"
+[ext_resource path="res://scripts/NumericLineEdit.tres.gd" type="Script" id=2]
 
 [node name="ConstantNumber" type="GraphNode"]
 margin_right = 148.0
@@ -54,8 +20,9 @@ margin_left = 16.0
 margin_top = 24.0
 margin_right = 132.0
 margin_bottom = 48.0
-script = SubResource( 1 )
+script = ExtResource( 2 )
 
 [connection signal="close_request" from="." to="." method="CloseRequest"]
 [connection signal="resize_request" from="." to="." method="ResizeRequest"]
+[connection signal="change" from="LineEdit" to="." method="TextBoxChange"]
 [connection signal="text_changed" from="LineEdit" to="LineEdit" method="_on_LineEdit_text_changed"]
