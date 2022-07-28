@@ -17,4 +17,5 @@ func _physics_process(delta):
 	counter = counter + 1
 	if counter % 5 == 0:
 		if is_colliding():
-			print("THING:", get_collision_point().distance_to(self.global_position))
+			#print("THING:", get_collision_point().distance_to(self.global_position))
+			pass
