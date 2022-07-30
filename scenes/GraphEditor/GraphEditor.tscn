@@ -1,11 +1,10 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeComment.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodePlayerInput.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodePlayerOutput.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/GraphEditor/NodeGraphEditor.cs" type="Script" id=4]
 [ext_resource path="res://scenes/GraphEditor/NodeEngine.cs" type="Script" id=7]
-[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeNumber.tscn" type="PackedScene" id=8]
 [ext_resource path="res://scenes/GraphEditor/GraphEditorPopup.tscn" type="PackedScene" id=9]
 
 [node name="NodeEngine" type="Control"]
@@ -28,31 +27,17 @@ margin_right = 217.0
 margin_bottom = 440.0
 mouse_filter = 1
 offset = Vector2( 50, 200 )
+deletable = false
 
 [node name="PlayerOutput" parent="GraphEdit" instance=ExtResource( 3 )]
-margin_left = 700.0
+margin_left = 1000.0
 margin_top = 200.0
-margin_right = 871.0
-margin_bottom = 304.0
+margin_right = 1171.0
+margin_bottom = 305.0
 mouse_filter = 1
 title = "Player's Controls"
-offset = Vector2( 700, 200 )
-
-[node name="ConstantNumber" parent="GraphEdit" instance=ExtResource( 8 )]
-margin_left = 400.0
-margin_top = 200.0
-margin_right = 544.0
-margin_bottom = 262.0
-mouse_filter = 1
-offset = Vector2( 400, 200 )
-
-[node name="ConstantNumber2" parent="GraphEdit" instance=ExtResource( 8 )]
-margin_left = 400.0
-margin_top = 300.0
-margin_right = 544.0
-margin_bottom = 362.0
-mouse_filter = 1
-offset = Vector2( 400, 300 )
+offset = Vector2( 1000, 200 )
+deletable = false
 
 [node name="Comment" parent="GraphEdit" instance=ExtResource( 1 )]
 margin_left = 500.0
@@ -63,6 +48,7 @@ mouse_filter = 1
 offset = Vector2( 500, 100 )
 resizable = false
 comment = "To get started connect these constant numbers to Movement Speed and Turning Speed, it will auto convert a number between -1 and 1 to a positive or negative percentage of each speed."
+deletable = false
 CommentText = "To get started connect these constant numbers to Movement Speed and Turning Speed, it will auto convert a number between -1 and 1 to a positive or negative percentage of each speed."
 resizableExport = false
 
@@ -72,7 +58,10 @@ resizableExport = false
 [connection signal="mouse_entered" from="." to="." method="MouseEnter"]
 [connection signal="mouse_exited" from="." to="." method="MouseExit"]
 [connection signal="connection_request" from="GraphEdit" to="GraphEdit" method="FSConnect"]
+[connection signal="delete_nodes_request" from="GraphEdit" to="GraphEdit" method="FSDelete"]
 [connection signal="disconnection_request" from="GraphEdit" to="GraphEdit" method="FSDisconnect"]
+[connection signal="node_selected" from="GraphEdit" to="GraphEdit" method="FSSelect"]
+[connection signal="node_unselected" from="GraphEdit" to="GraphEdit" method="FSUnselect"]
 [connection signal="popup_request" from="GraphEdit" to="." method="PopupRequest"]
 [connection signal="popup_request" from="GraphEdit" to="GraphEdit" method="PopupRequest"]
 [connection signal="new_node" from="GraphEditorPopup" to="GraphEdit" method="AddNode"]

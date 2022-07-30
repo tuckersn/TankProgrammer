@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://scripts/GameButton.cs" type="Script" id=1]
 [ext_resource path="res://scenes/Platformer/Platformer.tscn" type="PackedScene" id=2]
@@ -9,6 +9,11 @@
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.352941, 0.4, 0.454902, 1 )
+
+[sub_resource type="Environment" id=2]
+
+[sub_resource type="World" id=3]
+environment = SubResource( 2 )
 
 [node name="Game" type="Control"]
 anchor_right = 1.0
@@ -78,6 +83,7 @@ stretch = true
 size = Vector2( 334, 670 )
 size_override_stretch = true
 own_world = true
+world = SubResource( 3 )
 transparent_bg = true
 handle_input_locally = false
 usage = 0

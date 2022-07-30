@@ -1,6 +1,7 @@
 ﻿module FS.Utils
 
 open System
+open Godot
 
 
 let toRads(degrees: float32) =
@@ -25,3 +26,12 @@ and
         rad.create(toRads(float32 deg))
     static member (+) (r: float32<rad>, d: float32<deg>) =
         r + deg.rad(d)
+       
+
+type BooleanOperator =
+    | GreaterThan = 0uy
+    | LessThan = 1uy
+    | Equals = 2uy
+    | GreaterOrEquals = 3uy
+    | LessOrEquals = 4uy
+    | Not = 5uy

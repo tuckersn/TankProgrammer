@@ -80,6 +80,7 @@ margin_bottom = 98.0
 text = "Name"
 
 [node name="ValueLabels" type="Control" parent="."]
+visible = false
 margin_left = 16.0
 margin_top = 99.0
 margin_right = 213.0
@@ -88,6 +89,7 @@ size_flags_horizontal = 15
 size_flags_vertical = 15
 
 [node name="MovementValue" type="Label" parent="ValueLabels"]
+visible = false
 anchor_left = 1.0
 anchor_right = 1.0
 margin_left = 14.0
@@ -97,6 +99,7 @@ margin_bottom = -63.0
 align = 2
 
 [node name="TurningValue" type="Label" parent="ValueLabels"]
+visible = false
 anchor_left = 1.0
 anchor_right = 1.0
 margin_left = 14.0

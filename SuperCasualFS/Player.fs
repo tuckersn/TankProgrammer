@@ -101,7 +101,9 @@ type PlayerBody() as _this =
                         sprite.Value.Play(animationDirection)
                 else
                     if not(sprite.Value.Animation = "default") then
+                        GD.Print("DEFAULT");
                         sprite.Value.Play("default")
+                ()
                     
             | None -> ()
                 

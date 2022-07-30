@@ -1,15 +1,19 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://scenes/GraphEditor/GraphEditorPopup.gd" type="Script" id=1]
 [ext_resource path="res://scenes/GraphEditor/NodeListItem.gd" type="Script" id=2]
 [ext_resource path="res://scenes/GraphEditor/GraphEditorPopupSearchBar.gd" type="Script" id=3]
-[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeNumber.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeConstantNumber.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeComment.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeRandomNumber.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeBoolOperation.tscn" type="PackedScene" id=7]
+[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeConstantBool.tscn" type="PackedScene" id=8]
+[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeSwitch.tscn" type="PackedScene" id=9]
+[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeButton.tscn" type="PackedScene" id=10]
 
 [node name="GraphEditorPopup" type="PopupMenu"]
-margin_right = 187.0
-margin_bottom = 233.0
+margin_right = 246.0
+margin_bottom = 410.0
 hide_on_state_item_selection = true
 allow_search = true
 script = ExtResource( 1 )
@@ -30,15 +34,15 @@ custom_constants/margin_bottom = 3
 [node name="Panel" type="Panel" parent="ColorRect/MarginContainer"]
 margin_left = 3.0
 margin_top = 3.0
-margin_right = 184.0
-margin_bottom = 230.0
+margin_right = 243.0
+margin_bottom = 407.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MarginContainer/Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="LineEdit" type="LineEdit" parent="ColorRect/MarginContainer/Panel/VBoxContainer"]
-margin_right = 181.0
+margin_right = 240.0
 margin_bottom = 24.0
 placeholder_text = "Search here..."
 placeholder_alpha = 0.318
@@ -48,41 +52,133 @@ script = ExtResource( 3 )
 
 [node name="ScrollContainer" type="ScrollContainer" parent="ColorRect/MarginContainer/Panel/VBoxContainer"]
 margin_top = 28.0
-margin_right = 181.0
-margin_bottom = 227.0
+margin_right = 240.0
+margin_bottom = 404.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="NodeListContainer" type="GridContainer" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer"]
-margin_right = 188.0
-margin_bottom = 199.0
+margin_right = 240.0
+margin_bottom = 376.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="ConstantNumber" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
-margin_right = 124.0
+margin_right = 188.0
 margin_bottom = 22.0
 text = "Constant Number"
 align = 0
 script = ExtResource( 2 )
 graph_node = ExtResource( 4 )
 
+[node name="ConstantBool" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
+margin_top = 26.0
+margin_right = 188.0
+margin_bottom = 48.0
+text = "Constant Bool"
+align = 0
+script = ExtResource( 2 )
+graph_node = ExtResource( 8 )
+
 [node name="RandomNumber" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
-margin_right = 124.0
-margin_bottom = 22.0
+margin_top = 52.0
+margin_right = 188.0
+margin_bottom = 74.0
 text = "Random Number Generator"
 script = ExtResource( 2 )
 graph_node = ExtResource( 6 )
 
 [node name="Comment" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
-margin_top = 26.0
-margin_right = 124.0
-margin_bottom = 48.0
+margin_top = 78.0
+margin_right = 188.0
+margin_bottom = 100.0
 text = "Comment"
 clip_text = true
 align = 0
 script = ExtResource( 2 )
 graph_node = ExtResource( 5 )
+
+[node name="ComparisonNumeric" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
+margin_top = 104.0
+margin_right = 188.0
+margin_bottom = 126.0
+text = "Comparison Numeric"
+clip_text = true
+align = 0
+script = ExtResource( 2 )
+graph_node = ExtResource( 7 )
+call_method = "PopupCB"
+call_method_string_arg = "number"
+
+[node name="ComparisonText" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
+margin_top = 156.0
+margin_right = 188.0
+margin_bottom = 178.0
+text = "Comparison Text"
+clip_text = true
+align = 0
+script = ExtResource( 2 )
+graph_node = ExtResource( 7 )
+call_method = "PopupCB"
+call_method_string_arg = "text"
+
+[node name="SwitchBool" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
+margin_top = 130.0
+margin_right = 188.0
+margin_bottom = 152.0
+text = "Switch Boolean"
+clip_text = true
+align = 0
+script = ExtResource( 2 )
+graph_node = ExtResource( 9 )
+call_method = "PopupCB"
+call_method_string_arg = "bool"
+
+[node name="SwitchNumber" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
+margin_top = 130.0
+margin_right = 188.0
+margin_bottom = 152.0
+text = "Switch Number"
+clip_text = true
+align = 0
+script = ExtResource( 2 )
+graph_node = ExtResource( 9 )
+call_method = "PopupCB"
+call_method_string_arg = "number"
+
+[node name="SwitchText" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
+margin_top = 130.0
+margin_right = 188.0
+margin_bottom = 152.0
+text = "Switch Text"
+clip_text = true
+align = 0
+script = ExtResource( 2 )
+graph_node = ExtResource( 9 )
+call_method = "PopupCB"
+call_method_string_arg = "text"
+
+[node name="Switch" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
+margin_top = 182.0
+margin_right = 188.0
+margin_bottom = 204.0
+text = "Comparison Text"
+clip_text = true
+align = 0
+script = ExtResource( 2 )
+graph_node = ExtResource( 7 )
+call_method = "PopupCB"
+call_method_string_arg = "text"
+
+[node name="Button" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
+margin_top = 182.0
+margin_right = 188.0
+margin_bottom = 204.0
+text = "Button"
+clip_text = true
+align = 0
+script = ExtResource( 2 )
+graph_node = ExtResource( 10 )
 
 [connection signal="id_focused" from="." to="." method="_on_GraphEditorPopup_id_focused"]
 [connection signal="id_pressed" from="." to="." method="_on_GraphEditorPopup_id_pressed"]

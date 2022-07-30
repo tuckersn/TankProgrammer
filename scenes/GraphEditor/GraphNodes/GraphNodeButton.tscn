@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeConstantBool.cs" type="Script" id=1]
+[ext_resource path="res://scenes/GraphEditor/GraphNodes/NodeGraphNodeConstantBool.gd" type="Script" id=2]
+
+[node name="Button" type="GraphNode"]
+margin_right = 121.0
+margin_bottom = 124.0
+title = "Button"
+resizable = true
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 2
+slot/0/right_color = Color( 1, 0, 1, 1 )
+script = ExtResource( 1 )
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 105.0
+margin_bottom = 118.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CheckButton" type="CheckButton" parent="CenterContainer"]
+margin_left = 6.0
+margin_top = 27.0
+margin_right = 82.0
+margin_bottom = 67.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource( 2 )
+
+[connection signal="close_request" from="." to="." method="CloseRequest"]
+[connection signal="resize_request" from="." to="." method="ResizeRequest"]
+[connection signal="toggled" from="CenterContainer/CheckButton" to="CenterContainer/CheckButton" method="_on_CheckButton_toggled"]

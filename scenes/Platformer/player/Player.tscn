@@ -43,7 +43,6 @@ default_color = Color( 0, 0, 1, 1 )
 
 [node name="BodySprite" type="AnimatedSprite" parent="PlayerBody"]
 frames = ExtResource( 1 )
-playing = true
 
 [node name="CollisionShape2D" type="CollisionPolygon2D" parent="PlayerBody"]
 position = Vector2( 0, 1.5 )
@@ -64,14 +63,11 @@ frames = ExtResource( 1 )
 animation = "Turret"
 
 [node name="CastHalfLeft" type="RayCast2D" parent="PlayerBody"]
-enabled = true
 cast_to = Vector2( 200, -200 )
 
 [node name="CastForward" type="RayCast2D" parent="PlayerBody"]
-enabled = true
 cast_to = Vector2( 0, -200 )
 
 [node name="CastHalfRight" type="RayCast2D" parent="PlayerBody"]
-enabled = true
 cast_to = Vector2( -200, -200 )
 script = ExtResource( 4 )

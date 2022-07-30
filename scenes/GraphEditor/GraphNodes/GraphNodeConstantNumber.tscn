@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeNumber.cs" type="Script" id=1]
+[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeConstantNumber.cs" type="Script" id=1]
 [ext_resource path="res://scripts/NumericLineEdit.tres.gd" type="Script" id=2]
 
 [node name="ConstantNumber" type="GraphNode"]
@@ -20,9 +20,10 @@ margin_left = 16.0
 margin_top = 24.0
 margin_right = 132.0
 margin_bottom = 48.0
+text = "0"
 script = ExtResource( 2 )
 
 [connection signal="close_request" from="." to="." method="CloseRequest"]
 [connection signal="resize_request" from="." to="." method="ResizeRequest"]
-[connection signal="change" from="LineEdit" to="." method="TextBoxChange"]
+[connection signal="change" from="LineEdit" to="." method="SetValue"]
 [connection signal="text_changed" from="LineEdit" to="LineEdit" method="_on_LineEdit_text_changed"]

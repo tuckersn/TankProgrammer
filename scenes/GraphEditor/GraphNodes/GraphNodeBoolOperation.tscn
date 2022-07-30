@@ -1,0 +1,77 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeBoolOperation.cs" type="Script" id=1]
+[ext_resource path="res://scenes/GraphEditor/GraphNodes/OptionButtonOperators.gd" type="Script" id=2]
+
+[node name="Boolean Operation" type="GraphNode"]
+margin_right = 142.0
+margin_bottom = 62.0
+title = "Boolean Operation"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 0, 0, 1 )
+slot/1/left_enabled = true
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 0, 0, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 0, 0, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 0, 1, 1 )
+slot/2/right_enabled = true
+slot/2/right_type = 2
+slot/2/right_color = Color( 1, 0, 1, 1 )
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color( 1, 1, 1, 1 )
+script = ExtResource( 1 )
+Operator = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 137.0
+margin_bottom = 38.0
+
+[node name="TrueValue" type="Label" parent="HBoxContainer"]
+margin_right = 9.0
+margin_bottom = 14.0
+text = "A"
+
+[node name="FalseValue" type="LineEdit" parent="."]
+margin_left = 16.0
+margin_top = 39.0
+margin_right = 137.0
+margin_bottom = 63.0
+placeholder_text = "B"
+
+[node name="TrueValue2" type="Label" parent="."]
+margin_left = 16.0
+margin_top = 64.0
+margin_right = 137.0
+margin_bottom = 78.0
+size_flags_horizontal = 3
+text = "Out"
+align = 2
+
+[node name="TrueValue3" type="OptionButton" parent="."]
+margin_left = 16.0
+margin_top = 79.0
+margin_right = 137.0
+margin_bottom = 99.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Less or equals"
+items = [ "Greater than", null, false, 0, null, "Less than", null, false, 1, null, "Equals", null, false, 2, null, "Greater or equals", null, false, 3, null, "Less or equals", null, false, 4, null, "TEST", null, false, 0, null, "TEST", null, false, 1, null, "TEST", null, false, 2, null, "TEST", null, false, 3, null, "TEST", null, false, 4, null ]
+selected = 4
+script = ExtResource( 2 )
+
+[connection signal="close_request" from="." to="." method="CloseRequest"]
+[connection signal="resize_request" from="." to="." method="ResizeRequest"]
