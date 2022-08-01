@@ -56,6 +56,14 @@ type Slot =
             | Bool value -> Choice3Of4(value)
             | List value -> Choice4Of4(value)
 
+    static member number(slot: Slot) =
+        match Slot.value(slot) with
+            | Choice1Of4(value) -> match value with
+                | v when v > 1f -> 1f
+                | v when v < -1f -> -1f
+                | _ -> value 
+            | _ -> raise (System.ArgumentException("Wrong type!"));
+
     static member percentage(slot: Slot) =
         match Slot.value(slot) with
             | Choice1Of4(value) -> match value with
@@ -85,15 +93,16 @@ type Slot =
     member this.booleanOperation(otherSlot: Slot, operator: BooleanOperator) = 
         match operator with
             | BooleanOperator.GreaterThan ->
-                (this > otherSlot)
+                GD.Print("GREATER: ", Slot.value(this), Slot.value(otherSlot))
+                (Slot.value(this) > Slot.value(otherSlot))
             | BooleanOperator.LessThan ->
-                (this < otherSlot)
+                (Slot.value(this) < Slot.value(otherSlot))
             | BooleanOperator.Equals ->
-                (this = otherSlot)
+                (Slot.value(this) = Slot.value(otherSlot))
             | BooleanOperator.GreaterOrEquals ->
-                (this >= otherSlot)
+                (Slot.value(this) >= Slot.value(otherSlot))
             | BooleanOperator.LessOrEquals ->
-                (this <= otherSlot)
+                (Slot.value(this) <= Slot.value(otherSlot))
             | _ -> false
 
     static member slotTypeToSlot(slotType: SlotType) =
@@ -112,7 +121,6 @@ type Slot =
             | _ -> raise (System.ArgumentException ("Unknown slotType: " + slotType.ToString()))
 
 
-
     static member op_GreaterThan (a: Slot, b: Slot) =
         if a.slotType() = b.slotType() then
             let aValue = Slot.value(a);
@@ -121,6 +129,43 @@ type Slot =
         else
             raise (System.ArgumentException ("Invalid slot comparison."))
             
+
+    member this.MathOperation(op: MathOperator) =
+        let value = 
+            match this with
+                | Slot.Number(number) -> number
+                | Slot.Percentage(percentage) -> percentage
+                | _ -> raise (System.ArgumentException ("Invalid type of Slot"))
+
+
+        match op with
+            | MathOperator.Abs -> Mathf.Abs(value)
+            | MathOperator.Negate -> value * -1f
+            | _ -> raise (System.ArgumentException ("Invalid type of Math operator for at least a single arguement call"))
+
+
+    member this.MathOperation(op: MathOperator, slot: Slot) =
+        let first = 
+            match this with
+                | Slot.Number(number) -> number
+                | Slot.Percentage(percentage) -> percentage
+                | _ -> raise (System.ArgumentException ("Invalid type of Slot"))
+
+        let second =
+            match slot with
+                | Slot.Number(number) -> number
+                | Slot.Percentage(percentage) -> percentage
+                | _ -> raise (System.ArgumentException ("Invalid type of Slot for operation of "  + op.ToString()))
+
+
+        match op with
+            | MathOperator.Add -> first + second
+            | MathOperator.Subtract -> first - second
+            | MathOperator.Multiply -> first * second
+            | MathOperator.Divide -> if second > 0f then first / second else 9999999f
+            | MathOperator.Exponent -> Mathf.Pow(first, second)
+            | MathOperator.Log -> LogBase(first, second)            
+            | _ -> raise (System.ArgumentException ("Invalid type of Slot for operation of "  + op.ToString()))
 
 
   
@@ -247,12 +292,14 @@ module PlayerControls =
             
             if this.Inputs.ContainsKey(0) then 
                 let (mIdx, mNode) = this.Inputs.Item(0);
+                //GD.Print("M: ", mIdx, "|", mNode, "|", mNode.Name, "|", mNode.Outputs);
                 movementSpeed <- mNode.Outputs.Item(mIdx);
             else
                 movementSpeed <- Slot.Percentage(0f)
                 
             if this.Inputs.ContainsKey(1) then 
                 let (tIdx, tNode) = this.Inputs.Item(1);
+                //GD.Print("T: ", tIdx, "|", tNode);
                 turningSpeed <- tNode.Outputs.Item(tIdx);
             else
                 turningSpeed <- Slot.Percentage(0f)
@@ -302,7 +349,7 @@ module Constant =
             with get() = slot
             and set(value: Slot) =
                 slot <- value
-                this.Execute()
+                this.Execute() 
 
         override this._Ready() =
             base._Ready()
@@ -332,6 +379,7 @@ module Constant =
 
 
 
+
     [<Tool>]
     type NodeGraphNodeComment() as _this = 
         inherit NodeGraphNode()
@@ -344,7 +392,6 @@ module Constant =
         [<Export(PropertyHint.MultilineText)>]
         member this.CommentText
             with get() = 
-                GD.Print("READ:", comment)
                 comment
             and set(value: string) = 
                 comment <- value
@@ -497,6 +544,7 @@ module Math =
                 else
                     Slot.emptyFromSlotType(slotType)
 
+            GD.Print("A: ", a, " | B: ", b, " | ", a.booleanOperation(b, operator));
             this.Outputs <- this.Outputs.Add(2, 
                 Slot.Bool(a.booleanOperation(b, operator)))
                     
@@ -504,7 +552,46 @@ module Math =
             ()
 
             
+    type NodeGraphNodeMathOperator() as _this =
+        inherit NodeGraphNode()
 
+        
+        let mutable operator: MathOperator = MathOperator.Add;
+
+
+        [<Export>]
+        member this.Operator
+            with get() =
+                operator
+            and set(value: MathOperator) =
+                operator <- value
+                
+
+        override this.Execute() =
+
+            let aSlot =
+                if this.Inputs.ContainsKey(0) then
+                    let (aIdx, aSlot) = this.Inputs.Item(0)
+                    aSlot.Outputs.Item(aIdx)
+                else
+                    Slot.Number(0f)                
+
+            
+            let result = 
+                match operator with
+                    | MathOperator.Abs | MathOperator.Negate ->
+                        // Single input operations
+                        aSlot.MathOperation(operator)
+                    | _ ->
+                        let bSlot =
+                            if this.Inputs.ContainsKey(1) then
+                                let (idx, slot) = this.Inputs.Item(1)
+                                slot.Outputs.Item(idx)
+                            else
+                                Slot.Number(0f)
+                        aSlot.MathOperation(operator, bSlot);
+
+            this.Outputs <- this.Outputs.Add(2, Slot.Number(result));
 (*
     SWITCH STATEMENTS
 *)
@@ -525,13 +612,11 @@ module Switch =
                 this.SetSlotColorLeft(1, colorOfSlotType(value))
                 this.SetSlotColorRight(0, colorOfSlotType(value))
 
+
         member this.GetBool(): bool =
-            //GD.Print("GET BOOL: ", _this.Inputs.ContainsKey(2))
             if _this.Inputs.ContainsKey(2) then
                 let (cIdx, cNode) = this.Inputs.Item(2)
-                GD.Print("GETTING NODE: ", cIdx, Slot.bool(cNode.Outputs.Item(cIdx)))
                 if cNode.Outputs.ContainsKey(cIdx) then
-                    GD.Print("CONTAIN")
                     Slot.bool(cNode.Outputs.Item(cIdx))
                 else
                     false
@@ -561,6 +646,10 @@ module Switch =
                     | SlotType.Number -> "Numeric Switch"
                     | SlotType.Text -> "Text Switch"
                     | _ ->  "Boolean Switch"
+        
+        override this._Ready() =
+            base._Ready();
+            this.Execute();
 
 
 
@@ -628,6 +717,30 @@ type NodeEditor() as _this =
         
     member this.PopupRequest(pos) =
         popupPosition <- pos
+
+
+
+type NodeGraphNodeJoyStick() as _this =
+    inherit NodeGraphNode()
+
+    let mutable value = Vector2.Zero;
+
+    let Editor: NodeEditor = lazy(_this.GetNode<NodeEditor>(new NodePath("../")));
+
+    member this.Vector
+        with get() =
+            value
+        and set(v: Vector2) =
+            value <- v
+
+    override this._Ready() =
+        base._Ready();
+        this.Execute()
+
+    override this.Execute() =
+        this.Outputs <- this.Outputs.Add(1, Slot.Percentage(value.x));
+        this.Outputs <- this.Outputs.Add(2, Slot.Percentage(value.y));
+        
 
 (*
     Actual Execution Engine

@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeComment.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodePlayerInput.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodePlayerOutput.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/GraphEditor/NodeGraphEditor.cs" type="Script" id=4]
+[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeJoyStick.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/GraphEditor/NodeEngine.cs" type="Script" id=7]
 [ext_resource path="res://scenes/GraphEditor/GraphEditorPopup.tscn" type="PackedScene" id=9]
 
@@ -15,6 +16,8 @@ script = ExtResource( 7 )
 [node name="GraphEdit" type="GraphEdit" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = 1.0
+margin_right = 1.0
 right_disconnects = true
 use_snap = false
 show_zoom_label = true
@@ -51,6 +54,14 @@ comment = "To get started connect these constant numbers to Movement Speed and T
 deletable = false
 CommentText = "To get started connect these constant numbers to Movement Speed and Turning Speed, it will auto convert a number between -1 and 1 to a positive or negative percentage of each speed."
 resizableExport = false
+
+[node name="Button" parent="GraphEdit" instance=ExtResource( 5 )]
+margin_left = 50.0
+margin_top = 50.0
+margin_right = 344.0
+margin_bottom = 386.0
+mouse_filter = 1
+offset = Vector2( 50, 50 )
 
 [node name="GraphEditorPopup" parent="." instance=ExtResource( 9 )]
 

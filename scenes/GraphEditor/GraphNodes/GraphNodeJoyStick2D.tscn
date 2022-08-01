@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="SphereMesh" id=1]
+
+[sub_resource type="GradientTexture" id=2]
+
+[node name="JoyStickScene" type="Node2D"]
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="."]
+position = Vector2( 50, 50 )
+scale = Vector2( 50, 50 )
+mesh = SubResource( 1 )
+texture = SubResource( 2 )

@@ -3,7 +3,6 @@
 open System
 open Godot
 
-
 let toRads(degrees: float32) =
     ((float32) Math.PI / 180f) * degrees
 
@@ -35,3 +34,16 @@ type BooleanOperator =
     | GreaterOrEquals = 3uy
     | LessOrEquals = 4uy
     | Not = 5uy
+
+type MathOperator =
+    | Add = 0uy
+    | Subtract = 1uy
+    | Multiply = 2uy
+    | Divide = 3uy
+    | Exponent = 4uy
+    | Log = 5uy
+    | Abs = 6uy
+    | Negate = 7uy
+
+//https://fsharp.github.io/fsharp-core-docs/reference/fsharp-core-operators.html
+let LogBase(baseNumber: float32, value: float32) = (log value) / (log baseNumber)

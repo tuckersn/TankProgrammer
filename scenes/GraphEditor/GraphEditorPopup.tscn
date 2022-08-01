@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://scenes/GraphEditor/GraphEditorPopup.gd" type="Script" id=1]
 [ext_resource path="res://scenes/GraphEditor/NodeListItem.gd" type="Script" id=2]
@@ -10,6 +10,8 @@
 [ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeConstantBool.tscn" type="PackedScene" id=8]
 [ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeSwitch.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeButton.tscn" type="PackedScene" id=10]
+[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeJoyStick.tscn" type="PackedScene" id=11]
+[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeMathOperation.tscn" type="PackedScene" id=12]
 
 [node name="GraphEditorPopup" type="PopupMenu"]
 margin_right = 246.0
@@ -111,9 +113,9 @@ call_method = "PopupCB"
 call_method_string_arg = "number"
 
 [node name="ComparisonText" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
-margin_top = 156.0
+margin_top = 130.0
 margin_right = 188.0
-margin_bottom = 178.0
+margin_bottom = 152.0
 text = "Comparison Text"
 clip_text = true
 align = 0
@@ -123,9 +125,9 @@ call_method = "PopupCB"
 call_method_string_arg = "text"
 
 [node name="SwitchBool" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
-margin_top = 130.0
+margin_top = 156.0
 margin_right = 188.0
-margin_bottom = 152.0
+margin_bottom = 178.0
 text = "Switch Boolean"
 clip_text = true
 align = 0
@@ -135,9 +137,9 @@ call_method = "PopupCB"
 call_method_string_arg = "bool"
 
 [node name="SwitchNumber" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
-margin_top = 130.0
+margin_top = 182.0
 margin_right = 188.0
-margin_bottom = 152.0
+margin_bottom = 204.0
 text = "Switch Number"
 clip_text = true
 align = 0
@@ -147,9 +149,9 @@ call_method = "PopupCB"
 call_method_string_arg = "number"
 
 [node name="SwitchText" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
-margin_top = 130.0
+margin_top = 208.0
 margin_right = 188.0
-margin_bottom = 152.0
+margin_bottom = 230.0
 text = "Switch Text"
 clip_text = true
 align = 0
@@ -159,9 +161,9 @@ call_method = "PopupCB"
 call_method_string_arg = "text"
 
 [node name="Switch" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
-margin_top = 182.0
+margin_top = 234.0
 margin_right = 188.0
-margin_bottom = 204.0
+margin_bottom = 256.0
 text = "Comparison Text"
 clip_text = true
 align = 0
@@ -171,14 +173,35 @@ call_method = "PopupCB"
 call_method_string_arg = "text"
 
 [node name="Button" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
-margin_top = 182.0
+margin_top = 260.0
 margin_right = 188.0
-margin_bottom = 204.0
+margin_bottom = 282.0
 text = "Button"
 clip_text = true
 align = 0
 script = ExtResource( 2 )
 graph_node = ExtResource( 10 )
+
+[node name="JoyStick" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
+margin_top = 286.0
+margin_right = 188.0
+margin_bottom = 308.0
+text = "Joy Stick"
+clip_text = true
+align = 0
+script = ExtResource( 2 )
+graph_node = ExtResource( 11 )
+call_method = "EmitResize"
+
+[node name="MathOperator" type="ToolButton" parent="ColorRect/MarginContainer/Panel/VBoxContainer/ScrollContainer/NodeListContainer"]
+margin_top = 286.0
+margin_right = 188.0
+margin_bottom = 308.0
+text = "Math Operator"
+clip_text = true
+align = 0
+script = ExtResource( 2 )
+graph_node = ExtResource( 12 )
 
 [connection signal="id_focused" from="." to="." method="_on_GraphEditorPopup_id_focused"]
 [connection signal="id_pressed" from="." to="." method="_on_GraphEditorPopup_id_pressed"]

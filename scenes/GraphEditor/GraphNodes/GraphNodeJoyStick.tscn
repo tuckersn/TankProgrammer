@@ -1,0 +1,205 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://scenes/GraphEditor/GraphNodes/GraphNodeJoyStick.cs" type="Script" id=1]
+[ext_resource path="res://assets/thumb_stick.png" type="Texture" id=2]
+
+[sub_resource type="Theme" id=1]
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.513726, 0.513726, 0.623529, 1 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.0705882, 0.0784314, 0.0862745, 1 )
+
+[sub_resource type="GDScript" id=10]
+script/source = "extends TextureRect
+
+
+export var root_path = \"../../../../\";
+var mouse_inside = false;
+var dragging = false;
+var move_area = get_parent();
+
+
+var value = Vector2(0,0);
+
+
+func center_of_area():
+	var pos = move_area.rect_position + (move_area.rect_size / 2);
+	pos -= (self.rect_size * self.rect_scale) / 2;
+	pos.x -= 2;
+	pos.y -= 2;
+	return pos;
+
+func center_stick():
+	value = Vector2(0,0);
+	self.get_node(root_path).SetValue(value);
+	if move_area != null:
+		self.rect_position = center_of_area();
+
+
+func resize(min_size):
+	center_stick();
+
+func _ready():
+	move_area = get_parent();
+	center_stick();
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+
+
+func _mouse_entered():
+	mouse_inside = true
+
+func _mouse_exited():
+	mouse_inside = false
+
+
+func _gui_input(event):
+	value = Vector2(
+		0,
+		0
+	);
+	if event is InputEventMouseButton:
+		print(\"EVB: \", event, \" | \", mouse_inside, \" | \", dragging)
+		if mouse_inside and event.is_pressed():
+			dragging = true
+		else:
+			dragging = false
+			center_stick()
+var counter = 0;
+func _process(delta):
+	if dragging and move_area != null:
+		
+		var mouse_pos = self.get_global_mouse_position();
+		mouse_pos -= (self.rect_size * self.rect_scale) / 2;
+		
+		if mouse_pos.x < move_area.rect_global_position.x:
+			#print(\"UNDER X\")
+			mouse_pos.x = move_area.rect_global_position.x;
+		elif mouse_pos.x + (self.rect_size * self.rect_scale).x  > move_area.rect_global_position.x + (move_area.rect_size.x * move_area.rect_scale.x):
+			#print(\"OVER  X \", mouse_pos.x, move_area.rect_global_position.x);
+			mouse_pos.x = move_area.rect_global_position.x + (move_area.rect_size.x * move_area.rect_scale.x);
+			mouse_pos.x -= (self.rect_size * self.rect_scale).x;
+			
+		if mouse_pos.y < move_area.rect_global_position.y:
+			mouse_pos.y = move_area.rect_global_position.y;
+		elif mouse_pos.y + (self.rect_size * self.rect_scale).y > move_area.rect_global_position.y + (move_area.rect_size.y * move_area.rect_scale.y):
+			mouse_pos.y = move_area.rect_global_position.y + (move_area.rect_size.y * move_area.rect_scale.y);
+			mouse_pos.y -= (self.rect_size * self.rect_scale).y;
+		#print(\"POS \", mouse_pos, \" | \", move_area.rect_global_position);
+		
+		self.rect_global_position = mouse_pos;
+		
+		var relative_far_corner = move_area.rect_size - (self.rect_size * self.rect_scale);
+		value = (self.rect_position * 2 - relative_far_corner) / relative_far_corner;
+		value.y *= -1;
+		self.get_node(root_path).SetValue(value);
+"
+
+[node name="GraphNodeJoyStick" type="GraphNode"]
+margin_right = 160.0
+margin_bottom = 200.0
+title = "Joy Stick"
+resizable = true
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 0, 0, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 2
+slot/0/right_color = Color( 0, 0, 0, 0 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 0, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = true
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 0, 1 )
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color( 1, 1, 1, 1 )
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color( 1, 1, 1, 1 )
+script = ExtResource( 1 )
+
+[node name="Panel" type="Panel" parent="."]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 144.0
+margin_bottom = 155.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource( 1 )
+custom_styles/panel = SubResource( 2 )
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_right = 2
+custom_constants/margin_top = 2
+custom_constants/margin_left = 2
+custom_constants/margin_bottom = 2
+
+[node name="MovableArea" type="Panel" parent="Panel/MarginContainer"]
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 126.0
+margin_bottom = 129.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource( 1 )
+custom_styles/panel = SubResource( 3 )
+
+[node name="Stick" type="TextureRect" parent="Panel/MarginContainer/MovableArea"]
+margin_left = 40.0
+margin_top = 40.0
+margin_right = 298.0
+margin_bottom = 290.0
+rect_scale = Vector2( 0.2, 0.2 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 2 )
+script = SubResource( 10 )
+
+[node name="Control" type="Label" parent="."]
+margin_left = 16.0
+margin_top = 156.0
+margin_right = 144.0
+margin_bottom = 170.0
+size_flags_vertical = 0
+text = "X position"
+align = 2
+
+[node name="Control2" type="Label" parent="."]
+margin_left = 16.0
+margin_top = 171.0
+margin_right = 144.0
+margin_bottom = 185.0
+text = "Y position"
+align = 2
+
+[node name="Control3" type="MarginContainer" parent="."]
+margin_left = 16.0
+margin_top = 186.0
+margin_right = 144.0
+margin_bottom = 194.0
+custom_constants/margin_bottom = 8
+
+[connection signal="close_request" from="." to="." method="CloseRequest"]
+[connection signal="ready" from="." to="Panel/MarginContainer/MovableArea/Stick" method="center_stick"]
+[connection signal="resize_request" from="." to="." method="ResizeRequest"]
+[connection signal="resize_request" from="." to="Panel/MarginContainer/MovableArea/Stick" method="resize"]
+[connection signal="gui_input" from="Panel/MarginContainer/MovableArea/Stick" to="Panel/MarginContainer/MovableArea/Stick" method="_gui_input"]
+[connection signal="mouse_entered" from="Panel/MarginContainer/MovableArea/Stick" to="Panel/MarginContainer/MovableArea/Stick" method="_mouse_entered"]
+[connection signal="mouse_exited" from="Panel/MarginContainer/MovableArea/Stick" to="Panel/MarginContainer/MovableArea/Stick" method="_mouse_exited"]
